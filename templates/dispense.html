@@ -1,0 +1,252 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <script>
+        // Variabile globale dispense disponibile per tutti gli script
+        const dispenseData = JSON.parse('{{ dispense|tojson|safe }}');
+    </script>
+    <h2>Gestione Dispense</h2>
+    <p>Qui potrai creare, eliminare e modificare le tue dispense.</p>
+
+    <h3>Crea una nuova dispensa</h3>
+    <form id="crea-dispensa-form">
+        <label for="nome_nuova_dispensa">Nome:</label>
+        <input type="text" id="nome_nuova_dispensa" name="nome_nuova_dispensa" required><br><br>
+        <button type="button" onclick="creaDispensa()">Crea</button>
+    </form>
+
+    <h3>Dispense esistenti</h3>
+    <div class="dispense-list">
+    {% if dispense %}
+        {% for nome_dispensa, alimenti in dispense.items() %}
+            <div class="dispensa-card" onclick="apriPopupDispensa('{{ nome_dispensa }}')">
+                <div class="dispensa-title">{{ nome_dispensa }}</div>
+                <div class="dispensa-info">{{ alimenti|length }} prodotti</div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nessuna dispensa creata.</p>
+    {% endif %}
+    </div>
+
+    <!-- Popup dispensa -->
+    <div id="popup-dispensa" class="popup-dispensa">
+        <div class="popup-content">
+            <span class="close-btn" onclick="chiudiPopupDispensa()">&times;</span>
+            <h3 id="popup-dispensa-title"></h3>
+            
+            <!-- Form di modifica dispensa -->
+            <form id="modifica-dispensa-form" style="display:none;">
+                <label for="nuovo_nome_dispensa">Nuovo Nome:</label>
+                <input type="text" id="nuovo_nome_dispensa" name="nuovo_nome_dispensa" required><br><br>
+
+                <h4>Alimenti:</h4>
+                <div id="modifica-alimenti-container">
+                </div>
+                <button type="button" onclick="salvaModificheDispensa()">Salva</button>
+            </form>
+
+             <!-- Visualizzazione semplice della dispensa -->
+            <div id="visualizza-dispensa">
+                <h4>Alimenti:</h4>
+                <ul id="alimenti-list">
+                </ul>
+                <button id="modifica-btn" onclick="mostraFormModificaDispensa()">Modifica</button>
+            </div>
+
+            <button id="elimina-btn" onclick="eliminaDispensaPopup()">Elimina Dispensa</button>
+        </div>
+    </div>
+
+    <script>
+       function creaDispensa() {
+        const nome_nuova_dispensa = document.getElementById('nome_nuova_dispensa').value;
+        fetch('/crea_dispensa', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `nome_nuova_dispensa=${encodeURIComponent(nome_nuova_dispensa)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.success) {
+                window.location.reload();
+            }
+        });
+    }
+    // Funzione per eliminare una dispensa
+    function eliminaDispensaPopup() {
+        const nome_dispensa = document.getElementById('popup-dispensa').getAttribute('data-nome-dispensa');
+
+        if (confirm(`Sei sicuro di voler eliminare la dispensa "${nome_dispensa}"?`)) {
+            fetch('/elimina_dispensa', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `nome_dispensa=${encodeURIComponent(nome_dispensa)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    chiudiPopupDispensa();
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Errore durante l\'eliminazione della dispensa:', error);
+                alert('Errore durante l\'eliminazione della dispensa.');
+            });
+        }
+    }
+
+
+       function apriPopupDispensa(nome_dispensa) {
+            const popup = document.getElementById('popup-dispensa');
+            popup.setAttribute('data-nome-dispensa', nome_dispensa); // Memorizza il nome della dispensa nel popup
+
+            const title = document.getElementById('popup-dispensa-title');
+            title.textContent = nome_dispensa;
+
+            const visualizzaDispensa = document.getElementById('visualizza-dispensa');
+            const modificaDispensaForm = document.getElementById('modifica-dispensa-form');
+            visualizzaDispensa.style.display = 'block';
+            modificaDispensaForm.style.display = 'none';
+
+            const nuovoNomeInput = document.getElementById('nuovo_nome_dispensa');
+            nuovoNomeInput.value = nome_dispensa;
+
+            const alimentiList = document.getElementById('alimenti-list');
+            alimentiList.innerHTML = '';
+
+            const prodotti = dispenseData[nome_dispensa];
+                if (prodotti && Object.keys(prodotti).length > 0) {
+                    for (const nome_alimento in prodotti) {
+                        const dettagli = prodotti[nome_alimento];
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${nome_alimento} - Quantità: ${dettagli.quantita} ${dettagli.unita} - Scadenza: ${dettagli.scadenza} (Categoria: ${dettagli.categoria}, Tipo: ${dettagli.tipo})`;
+                        alimentiList.appendChild(listItem);
+                    }
+                } else {
+                    alimentiList.innerHTML = '<li>Nessun prodotto presente.</li>';
+                }
+
+            popup.style.display = 'flex';
+        }
+
+        function chiudiPopupDispensa() {
+            document.getElementById('popup-dispensa').style.display = 'none';
+        }
+
+        function mostraFormModificaDispensa() {
+            const nome_dispensa = document.getElementById('popup-dispensa').getAttribute('data-nome-dispensa');
+            const visualizzaDispensa = document.getElementById('visualizza-dispensa');
+            const modificaDispensaForm = document.getElementById('modifica-dispensa-form');
+            visualizzaDispensa.style.display = 'none';
+            modificaDispensaForm.style.display = 'block';
+            
+           const nuovoNomeInput = document.getElementById('nuovo_nome_dispensa');
+            nuovoNomeInput.value = nome_dispensa;
+           
+            const modificaAlimentiContainer = document.getElementById('modifica-alimenti-container');
+            modificaAlimentiContainer.innerHTML = '';
+
+            const prodotti = dispenseData[nome_dispensa];
+            if (prodotti && Object.keys(prodotti).length > 0) {
+                for (const nome_alimento in prodotti) {
+                    const dettagli = prodotti[nome_alimento];
+                    const alimentoDiv = document.createElement('div');
+                    alimentoDiv.innerHTML = `
+                        <h4>${nome_alimento}</h4>
+                        <label for="quantita_${nome_alimento}">Quantità:</label>
+                        <input type="number" id="quantita_${nome_alimento}" name="quantita_${nome_alimento}" value="${dettagli.quantita}" required><br>
+                        <label for="unita_${nome_alimento}">Unità:</label>
+                        <input type="text" id="unita_${nome_alimento}" name="unita_${nome_alimento}" value="${dettagli.unita}" required><br>
+                        <label for="scadenza_${nome_alimento}">Scadenza:</label>
+                        <input type="date" id="scadenza_${nome_alimento}" name="scadenza_${nome_alimento}" value="${dettagli.scadenza}" required><br>
+                        <label for="categoria_${nome_alimento}">Categoria:</label>
+                        <input type="text" id="categoria_${nome_alimento}" name="categoria_${nome_alimento}" value="${dettagli.categoria}" required><br>
+                        <label for="tipo_${nome_alimento}">Tipo:</label>
+                        <input type="text" id="tipo_${nome_alimento}" name="tipo_${nome_alimento}" value="${dettagli.tipo}" required><br>
+                        <button type="button" onclick="eliminaAlimento('${nome_dispensa}', '${nome_alimento}')">Elimina Alimento</button><br><br>
+                    `;
+                    modificaAlimentiContainer.appendChild(alimentoDiv);
+                }
+            } else {
+                modificaAlimentiContainer.innerHTML = '<p>Nessun prodotto presente.</p>';
+            }
+
+            popup.setAttribute('data-nome-dispensa', nome_dispensa);
+        }
+
+       function salvaModificheDispensa() {
+            const nome_dispensa_originale = document.getElementById('popup-dispensa').getAttribute('data-nome-dispensa');
+            const nuovo_nome_dispensa = document.getElementById('nuovo_nome_dispensa').value;
+
+            let alimentiModificati = {};
+            const prodotti = dispenseData[nome_dispensa_originale];
+
+            for (const nome_alimento in prodotti) {
+                alimentiModificati[nome_alimento] = {
+                    quantita: document.getElementById(`quantita_${nome_alimento}`).value,
+                    unita: document.getElementById(`unita_${nome_alimento}`).value,
+                    scadenza: document.getElementById(`scadenza_${nome_alimento}`).value,
+                    categoria: document.getElementById(`categoria_${nome_alimento}`).value,
+                    tipo: document.getElementById(`tipo_${nome_alimento}`).value
+                };
+            }
+
+            const alimentiJson = JSON.stringify(alimentiModificati);
+
+            fetch('/modifica_dispensa', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `nome_dispensa_originale=${encodeURIComponent(nome_dispensa_originale)}&nuovo_nome_dispensa=${encodeURIComponent(nuovo_nome_dispensa)}&alimenti=${encodeURIComponent(alimentiJson)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    window.location.reload(); // Ricarica la pagina per mostrare le modifiche
+                }
+            })
+            .catch(error => {
+                console.error('Errore durante la modifica della dispensa:', error);
+                alert('Errore durante la modifica della dispensa.');
+            });
+        }
+
+    function eliminaAlimento(nome_dispensa, nome_alimento) {
+        if (confirm(`Sei sicuro di voler eliminare "${nome_alimento}" dalla dispensa "${nome_dispensa}"?`)) {
+            fetch('/rimuovi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `nome_dispensa=${encodeURIComponent(nome_dispensa)}&nome_alimento=${encodeURIComponent(nome_alimento)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // Aggiorna la visualizzazione della dispensa
+                mostraFormModificaDispensa();
+            })
+            .catch(error => {
+                console.error('Errore durante l\'eliminazione dell\'alimento:', error);
+                alert('Errore durante l\'eliminazione dell\'alimento.');
+            });
+        }
+    }
+
+
+    </script>
+{% endblock %}

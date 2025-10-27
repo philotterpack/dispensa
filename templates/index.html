@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Mia Dispensa Virtuale</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="topbar">
+        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <a href="/profilo" class="profile-link">Profilo</a>
+    </div>
+    <nav class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/dispense">Dispense</a></li>
+            <li><a href="/lista_spesa">Lista della Spesa</a></li>
+            <li><a href="/profilo">Profilo</a></li>
+        </ul>
+    </nav>
+    <div class="container" id="mainContainer">
+        <header>
+            <h1>La Mia Dispensa Virtuale</h1>
+        </header>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('mainContainer').classList.toggle('sidebar-open');
+        }
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('menuToggle');
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+                document.getElementById('mainContainer').classList.remove('sidebar-open');
+            }
+        });
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="{{ url_for('static', filename='js/firebase-config.js') }}"></script>
+</body>
+</html>

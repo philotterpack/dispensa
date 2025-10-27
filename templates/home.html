@@ -1,0 +1,81 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="home-page">
+    <h2>Aggiungi Alimento</h2>
+    <p>Inserisci un nuovo alimento nella tua dispensa.</p>
+
+    <form id="aggiungi-form" class="add-food-form">
+        <div class="form-group">
+            <label for="nome_dispensa">Nome Dispensa:</label>
+            <input type="text" id="nome_dispensa" name="nome_dispensa" list="dispense-list" required>
+            <datalist id="dispense-list">
+                {% for dispensa in dispense %}
+                    <option value="{{ dispensa.nome_dispensa }}">
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="nome_alimento">Nome Alimento:</label>
+            <input type="text" id="nome_alimento" name="nome_alimento" required>
+        </div>
+
+        <div class="form-group">
+            <label for="quantita">Quantità:</label>
+            <input type="number" id="quantita" name="quantita" required>
+        </div>
+
+        <div class="form-group">
+            <label for="unita">Unità:</label>
+            <select id="unita" name="unita">
+                <option value="unità">Unità</option>
+                <option value="pacchetti">Pacchetti</option>
+                <option value="confezioni">Confezioni</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="scadenza">Data di Scadenza:</label>
+            <input type="date" id="scadenza" name="scadenza" required>
+        </div>
+
+        <button type="button" onclick="aggiungiAlimento()" class="btn-primary">Aggiungi</button>
+    </form>
+</div>
+
+<script>
+    const dispenseData = JSON.parse('{{ dispense|tojson|safe }}') || [];
+    document.addEventListener('DOMContentLoaded', () => {
+        const datalist = document.getElementById('dispense-list');
+        datalist.innerHTML = '';
+        dispenseData.forEach(dispensa => {
+            const option = document.createElement('option');
+            option.value = dispensa.nome_dispensa;
+            datalist.appendChild(option);
+        });
+    });
+
+    function aggiungiAlimento() {
+        const nomeDispensa = document.getElementById('nome_dispensa').value;
+        const nomeAlimento = document.getElementById('nome_alimento').value;
+        const quantita = document.getElementById('quantita').value;
+        const unita = document.getElementById('unita').value;
+        const scadenza = document.getElementById('scadenza').value;
+
+        fetch('/aggiungi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `nome_dispensa=${encodeURIComponent(nomeDispensa)}&nome_alimento=${encodeURIComponent(nomeAlimento)}&quantita=${quantita}&unita=${unita}&scadenza=${scadenza}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            window.location.href = '/dispense';
+        });
+    }
+</script>
+{% endblock %}

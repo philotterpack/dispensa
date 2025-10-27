@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispensa Virtuale - Landing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="landing-container">
+        <header>
+            <nav class="landing-nav">
+                <div class="nav-brand">
+                    <h2>Dispensa Virtuale</h2>
+                </div>
+                <div class="nav-actions">
+                    <a href="{{ url_for('login') }}" class="btn-login">Login</a>
+                </div>
+            </nav>
+            
+            <div class="hero-section">
+                <h1>La Tua Dispensa a Portata di Mano</h1>
+                <p>Gestisci facilmente i tuoi alimenti e non dimenticare mai cosa hai in dispensa!</p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('login') }}" class="btn-primary">Accedi</a>
+                    <a href="{{ url_for('register') }}" class="btn-secondary">Registrati</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="features-section">
+            <h2>Perché scegliere Dispensa Virtuale?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>📱 Facile da Usare</h3>
+                    <p>Interfaccia intuitiva per gestire la tua dispensa in pochi click</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📅 Gestione Scadenze</h3>
+                    <p>Non dimenticare mai quando scadono i tuoi alimenti</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📋 Lista della Spesa</h3>
+                    <p>Crea automaticamente la tua lista della spesa</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

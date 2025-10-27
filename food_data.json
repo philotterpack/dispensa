@@ -1,0 +1,249 @@
+
+{
+  "categorie_cibi": [
+    {
+      "nome_categoria": "verdura",
+      "range_scadenza": "5-7 giorni (fresca), 3-4 mesi (congelata)",
+      "prodotti": [
+        "pomodoro", "pomodori", "lattuga", "lattughe", "valeriana", "spinaci", "zucchina", "zucchine", "carota", "carote", "peperone", "peperoni",
+        "melanzana", "melanzane", "broccoli", "cavolfiore", "finocchio", "finocchi",
+        "cetriolo", "cetrioli", "sedano", "asparago", "asparagi", "ravanello", "ravanelli",
+        "bietola", "bietole", "cicoria", "rucola", "radicchio",
+        "cavolo", "verza", "patata", "patate", "cipolla", "cipolle", "aglio",
+        "porro", "porri", "cavolo nero", "rapa", "rape", "topinambur",
+        "zucca", "funghi", "barbabietola", "barbabietole", "indivia",
+        "scarola", "cavolo rosso", "cavolini di Bruxelles", "pastinaca",
+        "daikon", "okra", "pak choi", "barba di frate", "erba cipollina",
+        "carciofo", "carciofi", "manioca", "taro", "patata dolce", "patate dolci",
+        "germogli di soia", "cardo", "cappero", "capperi", "oliva", "olive",
+        "peperoncino", "peperoncini", "melone amaro", "zenzero", "aglio orsino",
+        "cavolo rapa", "scorzonera", "samphire", "bietola da costa", "catalogna",
+        "cipollotto", "cipollotti", "aglio gigante",
+        "patata novella", "pomodorino", "pomodorini", "mais baby",
+        "germogli di bamboo", "foglie di senape", "bok choy",
+        "cavolo cinese", "yuca",
+        "ginseng", "rutabaga",
+        "puntarella", "puntarelle", "cipolle rosse di Tropea", "aglio nero",
+        "radice di loto", "castagne d'acqua", "cavolo verza","cetriolino","scalogno","scalogni","tartufo","tartufi"
+      ]
+    },
+    {
+      "nome_categoria": "frutta",
+      "range_scadenza": "2-7 giorni (fresca), 3-12 mesi (congelata),3-12 mesi (essiccata)",
+      "prodotti": [
+        "mela", "mele", "banana", "banane", "arancia", "arance", "fragola", "fragole", "kiwi",
+        "uva", "pera", "pere", "pesca", "pesche", "albicocca", "albicocche", "prugna", "prugne",
+        "limone", "limoni", "mandarino", "mandarini", "pompelmo", "melone",
+        "anguria", "ananas", "mango", "papaya",
+        "lampone", "lamponi", "mirtillo", "mirtilli", "mora", "more", "fico", "fichi", "caco",
+        "noce di cocco", "ciliegia", "ciliegie", "nettarina", "nettarine", "litchi",
+        "maracuja", "guava", "melograno",
+        "ribes", "uva spina", "corniolo", "sorba",
+        "giuggiola", "carambola", "durian", "rambutan", "longan",
+        "sapodilla", "acerola", "kumquat",
+        "feijoa", "sapote nero", "pitaya", "salak", "uva americana",
+        "nespola", "olive (da tavola)", "avocado",
+        "clementina", "mandarancio", "bergamotto",
+        "cedro", "lime", "frutto della passione",
+        "fico d'india", "gelso",
+        "azzeruolo", "corbezzolo", "mela cotogna", "uva fragola",
+        "prugnola", "mirabolano", "pomelia", "alkekengi",
+        "caco mela", "fragolina di bosco","mandorla","dattero","datteri","mandorle"
+      ]
+    },
+    {
+      "nome_categoria": "latticini",
+      "range_scadenza": "8-14 giorni (fresca), 3-6 mesi (stagionati), 3-6 mesi (confezionati)",
+      "prodotti": [
+        "latte fresco", "latte", "yogurt", "formaggio", "burro", "mozzarella", "ricotta",
+        "parmigiano", "pecorino", "gorgonzola", "stracchino", "provolone",
+        "fontina", "asiago", "taleggio", "robiola", "feta", "emmental",
+        "panna", "panna acida", "fiocchi di latte", "latte condensato",
+        "camembert", "brie", "caprino", "caciocavallo", "scamorza", "bel paese",
+        "montasio", "raschera", "toma", "casu marzu", "halloumi", "queso fresco",
+        "kefir", "skyr", "latte evaporato", "latte in polvere", "burro di yak",
+        "squacquerone", "ricotta salata", "formaggio di fossa", "burrata", "stracciatella",
+        "mascarpone", "puzzone di Moena", "crescenza", "stracchino di Crescenza", "mozzarella di bufala",
+        "cacioricotta", "canestrato pugliese",
+        "formai de mut dell'Alta Valle Brembana",
+        "granone lodigiano", "grana padano", "caprino fresco",
+        "caciotta", "provolone del Monaco", "formaggio di capra",
+        "quark", "labneh", "paneer", "requeijão", "filata", "certosa", "tiramisù"
+      ]
+    },
+    {
+      "nome_categoria": "carne",
+      "range_scadenza": "3-5 giorni (fresca), 3-12 mesi (congelata)",
+      "prodotti": [
+        "pollo", "manzo", "maiale", "tacchino", "agnello", "vitello",
+        "coniglio", "anatra", "oca", "quaglia", "bistecca", "costine",
+        "salsiccia", "prosciutto", "pancetta", "speck", "salame",
+        "mortadella", "lonza", "filetto", "fegato", "salsiccia di pollo",
+        "wurstel", "hamburger",
+        "arrosto", "spalla", "lardo", "cotechino",
+        "culatello", "coppa", "testa in cassetta", "soppressata", "'nduja",
+        "bacon", "pancetta affumicata", "salamella", "capocollo",
+        "porchetta", "stinco", "guanciale", "nervetto", "zampone",
+        "lingua", "trippa", "cervello", "rognone", "animelle",
+        "ossobuco", "carrè", "filetto di maiale",
+        "capocollo di Martina Franca", "prosciutto di Norcia",
+        "salame di Varzi", "salsiccia di Bra",
+        "mazzafegato",
+        "mortadella di Prato", "salame felino", "finocchiona", "cervo", "cinghiale", "arista", "salsiccia di cinghiale"
+      ]
+    },
+    {
+      "nome_categoria": "pesce",
+      "range_scadenza": "3 giorni (fresco), 6 mesi (congelato), 6 mesi (affumicato)",
+      "prodotti": [
+        "salmone", "tonno", "merluzzo", "gamberetto", "gamberetti",
+        "calamaro", "sogliola", "branzino", "orata",
+        "trota", "pesce spada", "sgombro", "acciughe",
+        "sardina", "cozza", "cozze", "vongola", "ostrica",
+        "granchio", "aragosta", "polpo", "seppia",
+        "nasello", "cernia", "rombo", "dentice",
+        "ombrina", "scorfano", "triglia", "alici",
+        "baccalà", "stoccafisso",
+        "pesce gatto", "halibut", "pesce persico", "ricciola",
+        "lampuga", "corvina", "pagello", "pesce balestra",
+        "pesce pappagallo", "murena", "riccio di mare",
+        "bottarga", "anguilla", "pesce San Pietro",
+        "pannocchie", "canocchie", "fasolari", "tartufi di mare",
+        "gambero rosso", "mazzancolle", "scampi",
+        "palombo", "pesce serra",
+        "aringa affumicata",
+        "anguilla affumicata", "uova di lompo",
+        "coda di rospo", "sgombro affumicato","cefalo","sugarello", "sarago", "surimi","pesce azzurro","anguilla affumicata"
+      ]
+    },
+    {
+      "nome_categoria": "cereali",
+      "range_scadenza": "12 mesi (secchi), 3 giorni (fresca)",
+      "prodotti": [
+        "farina di mais","farina","riso", "pasta", "farro", "orzo", "quinoa", "grano saraceno",
+        "avena", "bulgur", "couscous", "miglio", "amaranto", "segale",
+        "mais", "grano", "spelta", "germe di grano", "crusca", "fiocchi d'avena",
+        "grano khorasan", "teff", "triticale", "farina di riso", "farina di mais",
+        "farro monococco", "orzo perlato", "semola", "polenta",
+        "farina di farro", "farina di segale", "farina di kamut", "farro dicocco",
+        "riso basmati", "riso venere", "riso rosso", "riso selvaggio", "fecola di patate",
+        "tapioca", "amido di mais", "kamut", "muesli", "farina di castagne",
+        "riso integrale", "riso parboiled", "riso carnaroli",
+        "pasta di semola di grano duro", "pasta all'uovo", "pasta integrale",
+        "gnocchi", "pizzoccheri", "malloreddus", "fregola sarda", "cuscus","sago","riso arborio","riso vialone nano","pasta fresca", "frumento"
+      ]
+    },
+    {
+      "nome_categoria": "legumi",
+      "range_scadenza": "1-2 anni (secchi), 3-5 giorni (cotti), 6 mesi (confezionati)",
+      "prodotti": [
+        "fagioli", "lenticchie", "ceci", "piselli", "fave", "soia",
+        "lupini", "azuki", "cicerchie", "edamame", "tofu", "tempeh",
+        "miso", "hummus", "farina di ceci", "fagiolini", "carne di soia",
+        "fagioli neri", "fagioli borlotti", "fagioli cannellini",
+        "ceci neri", "lenticchie rosse", "lenticchie verdi", "piselli spezzati",
+        "fagioli mung", "fagioli dell'occhio", "fagioli adzuki", "lenticchie beluga",
+        "ceci verdi", "soia texturizzata", "seitan", "natto", "miso bianco",
+        "guar", "tamarindo", "fagioli bianchi di Spagna",
+        "fave secche", "cicoria", "arachidi tostate",
+        "hummus di ceci neri",
+        "fagioli corona",
+        "piselli freschi", "fave fresche",
+        "fagioli tondini", "fagioli zolfini",
+        "arachidi",
+        "zuppa di lenticchie rosse",
+        "fagioli di Sorana", "ceci di Merella", "lenticchie di Castelluccio","pasta di arachidi","piselli nani", "soia edamame"
+      ]
+    },
+    {
+      "nome_categoria": "dolci",
+      "range_scadenza": "3-7 giorni (fresca), 4-6 mesi (confezionati), 4-6 mesi (congelati)",
+      "prodotti": [
+        "cioccolato", "gelato", "biscotti", "torta", "croissant", "muffin",
+        "panettone", "pandoro", "tiramisù", "cheesecake", "panna cotta",
+        "crema pasticcera", "cannoli", "zeppole", "bignè", "saccottini",
+        "strudel", "brownies", "cupcake", "macaron", "mousse", "budino",
+        "sbrisolona", "panforte", "torrone", "cantucci", "amaretti",
+        "paste di meliga", "krumiri", "baci di dama", "lingue di gatto",
+        "savoiardi", "biscotti al vino", "canestrelli",
+        "torta sacher", "profiteroles", "tarte tatin", "babà", "cassata siciliana",
+        "sfogliatella", "struffoli", "zuppa inglese",
+        "frittelle", "bomboloni",
+        "millefoglie", "eclair", "donut", "baklava", "knafeh", "biscotti della fortuna", "occhi di bue", "ricciarelli","colomba pasquale","torta caprese","torta di mele","torta della nonna", "merendina","pasticcino","yogurt greco con miele e noci"
+      ]
+    },
+    {
+      "nome_categoria": "bevande",
+      "range_scadenza": "6-24 mesi (confezionato), 1-3 giorni (fresco)",
+      "prodotti": [
+        "acqua", "succo d'arancia", "succo di mela", "caffè", "tè", "birra",
+        "vino", "sprite", "cola", "limonada", "succhi di frutta", "smoothie",
+        "latte di mandorla", "latte di soia", "sidro", "prosecco", "champagne",
+        "whisky", "vodka", "rum", "gin", "tonica", "aranciata", "ginger ale",
+        "grappa", "sambuca", "limoncello", "amaro", "vermouth", "sake",
+        "tequila", "mezcal", "cognac", "brandy", "assenzio", "aperol spritz",
+        "kombucha", "idromele", "mate", "chinotto", "ginger beer", "soda",
+        "vino rosso", "vino bianco", "vino rosato", "vino passito",
+        "caffè espresso", "caffè americano", "cappuccino", "latte macchiato",
+        "tè verde", "tè nero", "tè oolong", "tè matcha", "infuso di erbe",
+        "tisana", "orzata", "sciroppo di menta", "sciroppo di orzata", "cappuccino","macchiato", "frappè", "vino liquoroso"
+      ]
+    },
+    {
+      "nome_categoria": "spezie e erbe",
+      "range_scadenza": "1-3 anni (essiccate), 1-2 settimane (fresca)",
+      "prodotti": [
+        "pepe", "sale", "curry", "paprika", "zenzero", "cannella",
+        "noce moscata", "chiodi di garofano", "cumino", "coriandolo", "basilico",
+        "prezzemolo", "rosmarino", "timo", "origano", "salvia", "maggiorana",
+        "aneto", "zafferano", "peperoncino", "cardamomo",
+        "curcuma", "pimento", "fieno greco", "asafetida", "vaniglia", "wasabi",
+        "senape in semi", "alloro", "erba cipollina", "cerfoglio", "lavanda",
+        "menta", "marrubio", "dragoncello", "santoreggia", "melissa","nepitella",
+        "acetosella", "levistico", "erba luisa", "sesamo", "finocchietto selvatico",
+        "alga nori", "curry in polvere", "garam masala",
+        "zafferano in pistilli", "sale affumicato","anice stellato",
+        "sale rosa dell'Himalaya","cinque spezie cinesi", "noce","pinoli","pistacchio","pistacchi","pinolo"
+      ]
+    },
+    {
+      "nome_categoria": "prodotti da forno",
+      "range_scadenza": "1-3 giorni (fresca), 1-3 mesi (congelati)",
+      "prodotti": [
+        "pane bianco", "pane integrale", "baguette", "ciabatta", "focaccia",
+        "grissini", "taralli", "crackers", "fette biscottate", "pan brioche",
+        "cornetti", "pane di segale", "pane ai cereali",
+        "pane carasau", "piadina", "chapati", "naan", "pita", "tortillas",
+        "pretzel", "biscotti salati", "breadstick", "pane azzimo", "panini al sesamo",
+        "pane di patate", "pane multicereali", "pane nero", "sfilatino",
+        "pane toscano", "pane pugliese", "pane di Altamura", "schiacciata",
+        "pizza bianca", "pizza rossa", "focaccia genovese",
+        "pane arabo", "pane ai semi di lino", "pane di kamut",
+        "pizza", "pane al latte","pane al farro","focaccia barese","grano saraceno", "panino","panino integrale", "tarallo"
+      ]
+    },
+    {
+      "nome_categoria": "condimenti e salse",
+      "range_scadenza": "6-12 mesi (aperti), 1-3 anni (chiusi)",
+      "prodotti": [
+        "olio","confettura", "sugo", "olio d'oliva", "aceto", "sale", "pepe", "salsa di soia",
+        "salsa worcester", "ketchup", "maionese", "senape", "salsa barbecue",
+        "salsa tartara", "salsa ranch", "salsa al pomodoro", "pesto", "harissa",
+        "sriracha", "wasabi", "salsa hoisin", "salsa teriyaki",
+        "salsa di ostriche", "salsa di arachidi", "guacamole", "hummus", "tzatziki",
+        "salsa bernese", "salsa alfredo", "salsa carbonara", "salsa puttanesca", "salsa bolognese",
+        "salsa verde", "salsa ai funghi", "salsa al curry",
+        "salsa agrodolce", "salsa chili", "salsa caesar",
+        "salsa cocktail", "salsa aioli", "salsa Cumberland", "salsa gravy",
+        "tapenade", "bagna cauda", "salsa rubra", "salsa rafano", "salsa yogurt","salsa pescara","chimichurri","salsa romesco","salsa satay", "besciamella","marmellata","mostarda"
+      ]
+    },
+    {
+      "nome_categoria": "uova",
+      "range_scadenza": "20 giorni (fresca), 5 giorni (cotti)",
+      "prodotti": [
+        "uova","uovo","uovo di struzzo"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,756 @@
+/* Stili generali */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6fb;
+    margin: 0;
+    padding: 0;
+    transition: transform 0.3s ease-in-out; /* Transizione fluida per lo spostamento del body */
+}
+
+/* Menu Hamburger */
+.menu-toggle {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 1101;
+    background: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(74,144,226,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: background 0.2s;
+}
+
+.menu-toggle:hover {
+    background: #e3e8f0;
+}
+
+.menu-toggle .bar {
+    width: 28px;
+    height: 4px;
+    background: #4a90e2;
+    border-radius: 2px;
+    display: block;
+    transition: all 0.3s;
+}
+
+/* Overlay per effetto moderno quando la sidebar è aperta */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(44, 62, 80, 0.35);
+    z-index: 98;
+    transition: opacity 0.3s;
+}
+
+.sidebar.active + .sidebar-overlay {
+    display: block;
+    opacity: 1;
+}
+
+/* Stili per la Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Nascondi la sidebar fuori dallo schermo */
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(180deg, #2a3b4c 80%, #4a90e2 100%);
+    color: #fff;
+    box-shadow: 4px 0 24px rgba(44,62,80,0.12);
+    padding: 32px 0 0 0;
+    z-index: 1100;
+    transition: left 0.3s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+}
+
+.sidebar.active {
+    left: 0; /* Mostra la sidebar */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    border-left: 4px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background: rgba(255,255,255,0.08);
+    border-left: 4px solid #fff;
+}
+
+.sidebar a i {
+    font-size: 1.2em;
+    opacity: 0.8;
+}
+
+/* Stili per il Contenuto principale */
+.main-content {
+    transition: margin-left 0.3s ease-in-out; /* Transizione fluida per lo spostamento del contenuto */
+    margin-left: 0;
+}
+
+.main-content.sidebar-open {
+    margin-left: 250px; /* Sposta il contenuto a destra quando la sidebar è aperta */
+}
+
+/* Stili per il Container */
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 40px 40px 40px;
+    transition: margin-left 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar.active ~ .container,
+.main-content.sidebar-open {
+    margin-left: 250px;
+}
+
+@media (max-width: 900px) {
+    .container {
+        padding: 16px 6px 24px 6px;
+    }
+    .sidebar {
+        width: 200px;
+    }
+    .sidebar.active ~ .container,
+    .main-content.sidebar-open {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        width: 160px;
+        padding-top: 24px;
+    }
+    .sidebar a {
+        padding: 12px 14px;
+        font-size: 1rem;
+    }
+    .sidebar.active ~ .container,
+    .main-content.sidebar-open {
+        margin-left: 160px;
+    }
+    .menu-toggle {
+        top: 10px;
+        left: 10px;
+        padding: 6px 4px;
+    }
+}
+
+/* Stili per la Topbar */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 60px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    display: flex;
+    align-items: center;
+    z-index: 1200;
+    padding-left: 0;
+    padding-right: 24px;
+}
+
+.menu-toggle {
+    margin-left: 24px;
+    margin-right: 18px;
+    top: 16px;
+    left: 0;
+    position: relative;
+}
+
+.profile-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-left: auto;
+    padding: 10px 18px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.profile-link:hover {
+    background: #e3e8f0;
+    color: #2a3b4c;
+}
+
+.sidebar {
+    padding-top: 60px;
+}
+
+@media (max-width: 600px) {
+    .topbar {
+        height: 44px;
+        padding-right: 8px;
+    }
+    .menu-toggle {
+        margin-left: 8px;
+        margin-right: 8px;
+        top: 6px;
+    }
+    .profile-link {
+        font-size: 1rem;
+        padding: 7px 10px;
+    }
+    .sidebar {
+        padding-top: 44px;
+    }
+}
+
+/* Miglioramento link e focus */
+.sidebar a:focus {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+}
+
+/* Miglioramento header */
+header {
+    color: #2a3b4c;
+    text-align: center;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+}
+
+/* Stili per la scheda utente nella pagina profilo */
+.user-card {
+    display: flex;
+    gap: 32px;
+    background: #f9fafc;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(74,144,226,0.10);
+    padding: 32px 28px;
+    margin: 32px auto 0 auto;
+    max-width: 500px;
+    align-items: flex-start;
+}
+
+.user-photo img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #4a90e2;
+    background: #fff;
+}
+
+.user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-row {
+    font-size: 1.08rem;
+    color: #2a3b4c;
+    background: #eaf1fb;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 0;
+}
+
+.user-row strong {
+    color: #357ab8;
+    margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+    .user-card {
+        flex-direction: column;
+        align-items: center;
+        padding: 18px 8px;
+        gap: 18px;
+    }
+    .user-photo img {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+/* Stili per le schede dispensa */
+.dispense-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+.dispensa-card {
+    background: #f9fafc;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(74,144,226,0.10);
+    padding: 24px 28px 18px 28px;
+    min-width: 220px;
+    max-width: 260px;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 2px solid #e3e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.dispensa-card:hover {
+    box-shadow: 0 6px 24px rgba(74,144,226,0.18);
+    transform: translateY(-2px) scale(1.03);
+    border-color: #4a90e2;
+}
+.dispensa-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #357ab8;
+    margin-bottom: 8px;
+}
+.dispensa-info {
+    font-size: 0.98rem;
+    color: #2a3b4c;
+    opacity: 0.8;
+}
+
+/* Stili per il popup moderno della dispensa */
+.popup-dispensa {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(44,62,80,0.18);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+.popup-content {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+    padding: 32px 36px;
+    min-width: 320px;
+    max-width: 420px;
+    position: relative;
+    text-align: left;
+}
+.close-btn {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-size: 2rem;
+    color: #4a90e2;
+    cursor: pointer;
+    font-weight: bold;
+    background: none;
+    border: none;
+}
+#popup-dispensa-title {
+    font-size: 1.3rem;
+    color: #357ab8;
+    margin-bottom: 12px;
+}
+#popup-dispensa-info ul {
+    padding-left: 18px;
+    margin-bottom: 18px;
+}
+#popup-dispensa-info li {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #2a3b4c;
+}
+#modifica-btn, #elimina-btn {
+    background: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    margin-right: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#elimina-btn {
+    background: #ed2020;
+}
+#modifica-btn:hover {
+    background: #357ab8;
+}
+#elimina-btn:hover {
+    background: #b71c1c;
+}
+@media (max-width: 700px) {
+    .dispense-list {
+        gap: 12px;
+    }
+    .dispensa-card {
+        min-width: 140px;
+        max-width: 98vw;
+        padding: 14px 10px 10px 10px;
+    }
+    .popup-content {
+        min-width: 90vw;
+        padding: 18px 8px;
+    }
+}
+
+/* Stili per le pagine di autenticazione */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-header {
+    margin-bottom: 30px;
+}
+
+.auth-header h1 {
+    color: #2a3b4c;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.auth-header p {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.auth-form {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2a3b4c;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e3e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74,144,226,0.1);
+}
+
+.form-hint {
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background: #357ab8;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #4a90e2;
+    border: 2px solid #4a90e2;
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #4a90e2;
+    color: #fff;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-login {
+    background: #4a90e2;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-login:hover {
+    background: #357ab8;
+}
+
+.auth-footer {
+    text-align: center;
+}
+
+.auth-footer p {
+    margin: 10px 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auth-footer a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    background: #fee;
+    color: #c33;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    border: 1px solid #fcc;
+}
+
+.success-message {
+    background: #efe;
+    color: #3c3;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    border: 1px solid #cfc;
+}
+
+/* Stili per la landing page */
+.landing-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.landing-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.nav-brand h2 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 80px 40px;
+    color: #fff;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.features-section {
+    background: #fff;
+    padding: 80px 40px;
+    text-align: center;
+}
+
+.features-section h2 {
+    color: #2a3b4c;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    font-weight: 600;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: #f9fafc;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.feature-card h3 {
+    color: #2a3b4c;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Responsive design per le pagine di autenticazione */
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 10px;
+    }
+    
+    .auth-card {
+        padding: 30px 20px;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-section {
+        padding: 60px 20px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .features-section {
+        padding: 60px 20px;
+    }
+    
+    .features-section h2 {
+        font-size: 2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .landing-nav {
+        padding: 15px 20px;
+    }
+    
+    .nav-brand h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Altri stili (h2, h3, form, label, input, button, ul, li) rimangono invariati */

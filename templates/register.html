@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione - Dispensa Virtuale</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <header class="auth-header">
+                <h1>Crea il tuo Account</h1>
+                <p>Registrati per iniziare a gestire la tua dispensa</p>
+            </header>
+
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Inserisci la tua email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Crea una password" required minlength="6">
+                    <small class="form-hint">La password deve essere di almeno 6 caratteri</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Conferma Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Conferma la password" required>
+                </div>
+
+                <button type="submit" class="btn-primary btn-full">Registrati</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Hai già un account? <a href="{{ url_for('login') }}">Accedi qui</a></p>
+                <p><a href="{{ url_for('landing') }}">← Torna alla Home</a></p>
+            </div>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="success-message" class="success-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="{{ url_for('static', filename='js/firebase-config.js') }}"></script>
+    
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            if (!email || !password || !confirmPassword) {
+                showError('Compila tutti i campi');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('La password deve essere di almeno 6 caratteri');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('Le password non coincidono');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Inserisci un indirizzo email valido');
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    return userCredential.user.getIdToken();
+                })
+                .then((idToken) => {
+                    document.cookie = `token=${idToken};max-age=3600;path=/`;
+                    console.log("Registration successful");
+                    showSuccess('Registrazione completata! Reindirizzamento...');
+                    
+                    setTimeout(() => {
+                        window.location.href = "{{ url_for('home') }}";
+                    }, 2000);
+                })
+                .catch((error) => {
+                    console.error("Registration error", error);
+                    let errorMsg = "Errore durante la registrazione";
+                    
+                    switch(error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMsg = "Questa email è già registrata";
+                            break;
+                        case 'auth/invalid-email':
+                            errorMsg = "Email non valida";
+                            break;
+                        case 'auth/weak-password':
+                            errorMsg = "La password è troppo debole";
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMsg = "Registrazione non abilitata";
+                            break;
+                        default:
+                            errorMsg = error.message;
+                    }
+                    
+                    showError(errorMsg);
+                });
+        });
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+        }
+        
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = "{{ url_for('home') }}";
+            }
+        });
+        
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const confirmPassword = document.getElementById('confirm-password');
+            
+            if (password.length < 6) {
+                this.setCustomValidity('La password deve essere di almeno 6 caratteri');
+            } else {
+                this.setCustomValidity('');
+            }
+            
+            if (confirmPassword.value && password !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Le password non coincidono');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        });
+        
+        document.getElementById('confirm-password').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.setCustomValidity('Le password non coincidono');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    </script>
+</body>
+</html>
