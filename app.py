@@ -11,6 +11,10 @@ app.secret_key = os.environ.get('SECRET_KEY', 'chiave-segreta-fissa-da-cambiare-
 if os.environ.get('FIREBASE_CREDENTIALS'):
     firebase_creds = json.loads(os.environ.get('FIREBASE_CREDENTIALS'))
     cred = credentials.Certificate(firebase_creds)
+elif os.path.exists('serviceAccountKey.json'):
+    cred = credentials.Certificate('serviceAccountKey.json')
+elif os.path.exists('/etc/secrets/serviceAccountKey.json'):
+    cred = credentials.Certificate('/etc/secrets/serviceAccountKey.json')
 else:
     cred = credentials.Certificate("backend/serviceAccountKey.json")
 
