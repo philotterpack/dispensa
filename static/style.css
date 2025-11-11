@@ -1,13 +1,23 @@
-/* Stili generali */
+/* ========================================
+   RESET E STILI GENERALI
+   ======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f4f6fb;
     margin: 0;
     padding: 0;
-    transition: transform 0.3s ease-in-out; /* Transizione fluida per lo spostamento del body */
+    transition: transform 0.3s ease-in-out;
 }
 
-/* Menu Hamburger */
+/* ========================================
+   MENU HAMBURGER
+   ======================================== */
+
 .menu-toggle {
     position: fixed;
     top: 24px;
@@ -39,7 +49,10 @@ body {
     transition: all 0.3s;
 }
 
-/* Overlay per effetto moderno quando la sidebar è aperta */
+/* ========================================
+   OVERLAY SIDEBAR
+   ======================================== */
+
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -57,26 +70,28 @@ body {
     opacity: 1;
 }
 
-/* Stili per la Sidebar */
+/* ========================================
+   SIDEBAR
+   ======================================== */
+
 .sidebar {
     position: fixed;
     top: 0;
-    left: -250px; /* Nascondi la sidebar fuori dallo schermo */
+    left: -250px;
     width: 250px;
     height: 100vh;
     background: linear-gradient(180deg, #2a3b4c 80%, #4a90e2 100%);
     color: #fff;
     box-shadow: 4px 0 24px rgba(44,62,80,0.12);
-    padding: 32px 0 0 0;
+    padding: 60px 0 0 0;
     z-index: 1100;
     transition: left 0.3s cubic-bezier(.4,0,.2,1);
     display: flex;
     flex-direction: column;
-    padding-top: 60px;
 }
 
 .sidebar.active {
-    left: 0; /* Mostra la sidebar */
+    left: 0;
 }
 
 .sidebar ul {
@@ -102,7 +117,8 @@ body {
     transition: background 0.2s, border-color 0.2s;
 }
 
-.sidebar a:hover, .sidebar a.active {
+.sidebar a:hover, 
+.sidebar a.active {
     background: rgba(255,255,255,0.08);
     border-left: 4px solid #fff;
 }
@@ -112,66 +128,15 @@ body {
     opacity: 0.8;
 }
 
-/* Stili per il Contenuto principale */
-.main-content {
-    transition: margin-left 0.3s ease-in-out; /* Transizione fluida per lo spostamento del contenuto */
-    margin-left: 0;
+.sidebar a:focus {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
 }
 
-.main-content.sidebar-open {
-    margin-left: 250px; /* Sposta il contenuto a destra quando la sidebar è aperta */
-}
+/* ========================================
+   TOPBAR
+   ======================================== */
 
-/* Stili per il Container */
-.container {
-    max-width: 700px;
-    margin: 40px auto;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    padding: 32px 40px 40px 40px;
-    transition: margin-left 0.3s cubic-bezier(.4,0,.2,1);
-}
-
-.sidebar.active ~ .container,
-.main-content.sidebar-open {
-    margin-left: 250px;
-}
-
-@media (max-width: 900px) {
-    .container {
-        padding: 16px 6px 24px 6px;
-    }
-    .sidebar {
-        width: 200px;
-    }
-    .sidebar.active ~ .container,
-    .main-content.sidebar-open {
-        margin-left: 200px;
-    }
-}
-
-@media (max-width: 600px) {
-    .sidebar {
-        width: 160px;
-        padding-top: 24px;
-    }
-    .sidebar a {
-        padding: 12px 14px;
-        font-size: 1rem;
-    }
-    .sidebar.active ~ .container,
-    .main-content.sidebar-open {
-        margin-left: 160px;
-    }
-    .menu-toggle {
-        top: 10px;
-        left: 10px;
-        padding: 6px 4px;
-    }
-}
-
-/* Stili per la Topbar */
 .topbar {
     position: fixed;
     top: 0;
@@ -187,7 +152,7 @@ body {
     padding-right: 24px;
 }
 
-.menu-toggle {
+.topbar .menu-toggle {
     margin-left: 24px;
     margin-right: 18px;
     top: 16px;
@@ -211,36 +176,42 @@ body {
     color: #2a3b4c;
 }
 
-.sidebar {
-    padding-top: 60px;
+/* ========================================
+   CONTENUTO PRINCIPALE
+   ======================================== */
+
+.main-content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 0;
 }
 
-@media (max-width: 600px) {
-    .topbar {
-        height: 44px;
-        padding-right: 8px;
-    }
-    .menu-toggle {
-        margin-left: 8px;
-        margin-right: 8px;
-        top: 6px;
-    }
-    .profile-link {
-        font-size: 1rem;
-        padding: 7px 10px;
-    }
-    .sidebar {
-        padding-top: 44px;
-    }
+.main-content.sidebar-open {
+    margin-left: 250px;
 }
 
-/* Miglioramento link e focus */
-.sidebar a:focus {
-    outline: 2px solid #fff;
-    outline-offset: -2px;
+/* ========================================
+   CONTAINER
+   ======================================== */
+
+.container {
+    max-width: 700px;
+    margin: 100px auto 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 40px 40px 40px;
+    transition: margin-left 0.3s cubic-bezier(.4,0,.2,1);
 }
 
-/* Miglioramento header */
+.sidebar.active ~ .container,
+.main-content.sidebar-open {
+    margin-left: 250px;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
 header {
     color: #2a3b4c;
     text-align: center;
@@ -248,7 +219,10 @@ header {
     letter-spacing: 1px;
 }
 
-/* Stili per la scheda utente nella pagina profilo */
+/* ========================================
+   SCHEDA UTENTE (PROFILO)
+   ======================================== */
+
 .user-card {
     display: flex;
     gap: 32px;
@@ -291,139 +265,230 @@ header {
     margin-right: 8px;
 }
 
-@media (max-width: 600px) {
-    .user-card {
-        flex-direction: column;
-        align-items: center;
-        padding: 18px 8px;
-        gap: 18px;
-    }
-    .user-photo img {
-        width: 90px;
-        height: 90px;
-    }
+/* ========================================
+   SCHEDE DISPENSA
+   ======================================== */
+
+.dispense-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+    margin-bottom: 40px;
 }
 
-/* Stili per le schede dispensa */
-.dispense-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    margin-top: 24px;
-    margin-bottom: 32px;
-}
 .dispensa-card {
-    background: #f9fafc;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(74,144,226,0.10);
-    padding: 24px 28px 18px 28px;
-    min-width: 220px;
-    max-width: 260px;
+    background: linear-gradient(135deg, #f9fafc 0%, #ffff 100%);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(74,144,226,0.12);
+    padding: 30px;
     cursor: pointer;
-    transition: box-shadow 0.2s, transform 0.2s;
-    border: 2px solid #e3e8f0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
 }
+
+.dispensa-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #4a90e2 0%, #667eea 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+}
+
+.dispensa-card:hover::before {
+    transform: scaleX(1);
+}
+
 .dispensa-card:hover {
-    box-shadow: 0 6px 24px rgba(74,144,226,0.18);
-    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 40px rgba(74,144,226,0.25);
+    transform: translateY(-8px);
     border-color: #4a90e2;
 }
+
 .dispensa-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #357ab8;
-    margin-bottom: 8px;
-}
-.dispensa-info {
-    font-size: 0.98rem;
+    font-size: 1.4rem;
+    font-weight: 700;
     color: #2a3b4c;
-    opacity: 0.8;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Stili per il popup moderno della dispensa */
+.dispensa-title::before {
+    content: '📦';
+    font-size: 1.6rem;
+}
+
+.dispensa-info {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dispensa-info::before {
+    content: '🥫';
+    font-size: 1.2rem;
+}
+
+/* ========================================
+   POPUP DISPENSA
+   ======================================== */
+
 .popup-dispensa {
     display: none;
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(44,62,80,0.18);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44,62,80,0.6);
+    backdrop-filter: blur(4px);
     z-index: 2000;
     align-items: center;
     justify-content: center;
+    animation: fadeIn 0.3s;
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .popup-content {
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
-    padding: 32px 36px;
-    min-width: 320px;
-    max-width: 420px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(44,62,80,0.3);
+    padding: 40px;
+    min-width: 400px;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
     position: relative;
-    text-align: left;
+    animation: slideUp 0.3s;
 }
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .close-btn {
     position: absolute;
-    top: 18px;
-    right: 22px;
+    top: 20px;
+    right: 24px;
     font-size: 2rem;
-    color: #4a90e2;
+    color: #999;
     cursor: pointer;
     font-weight: bold;
     background: none;
     border: none;
+    transition: all 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
+
+.close-btn:hover {
+    background: #f0f0f0;
+    color: #e74c3c;
+    transform: rotate(90deg);
+}
+
 #popup-dispensa-title {
-    font-size: 1.3rem;
-    color: #357ab8;
-    margin-bottom: 12px;
+    font-size: 1.8rem;
+    color: #2a3b4c;
+    margin-bottom: 20px;
+    font-weight: 700;
+    padding-right: 40px;
 }
+
 #popup-dispensa-info ul {
     padding-left: 18px;
     margin-bottom: 18px;
 }
+
 #popup-dispensa-info li {
     margin-bottom: 8px;
     font-size: 1rem;
     color: #2a3b4c;
 }
-#modifica-btn, #elimina-btn {
-    background: #4a90e2;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 18px;
-    margin-right: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-#elimina-btn {
-    background: #ed2020;
-}
-#modifica-btn:hover {
-    background: #357ab8;
-}
-#elimina-btn:hover {
-    background: #b71c1c;
-}
-@media (max-width: 700px) {
-    .dispense-list {
-        gap: 12px;
-    }
-    .dispensa-card {
-        min-width: 140px;
-        max-width: 98vw;
-        padding: 14px 10px 10px 10px;
-    }
-    .popup-content {
-        min-width: 90vw;
-        padding: 18px 8px;
-    }
+
+#alimenti-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
 }
 
-/* Stili per le pagine di autenticazione */
+#alimenti-list li {
+    background: #f8f9fa;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border-left: 4px solid #4a90e2;
+    font-size: 0.95rem;
+    color: #2a3b4c;
+    transition: all 0.3s;
+}
+
+#alimenti-list li:hover {
+    background: #e3f2fd;
+    transform: translateX(5px);
+}
+
+#modifica-btn, 
+#elimina-btn {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    margin-right: 12px;
+    margin-top: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(74,144,226,0.3);
+}
+
+#modifica-btn:hover, 
+#elimina-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(74,144,226,0.4);
+}
+
+#elimina-btn {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 4px 12px rgba(231,76,60,0.3);
+}
+
+#elimina-btn:hover {
+    box-shadow: 0 6px 16px rgba(231,76,60,0.4);
+}
+
+/* ========================================
+   PAGINE DI AUTENTICAZIONE
+   ======================================== */
+
 .auth-container {
     min-height: 100vh;
     display: flex;
@@ -484,7 +549,6 @@ header {
     border-radius: 10px;
     font-size: 1rem;
     transition: border-color 0.3s, box-shadow 0.3s;
-    box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -596,7 +660,96 @@ header {
     border: 1px solid #cfc;
 }
 
-/* Stili per la landing page */
+/* ========================================
+   NOTIFICA PUSH (LOGIN)
+   ======================================== */
+
+.push-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    z-index: 3000;
+    min-width: 320px;
+    max-width: 400px;
+    animation: slideInRight 0.4s ease-out;
+    display: none;
+}
+
+.push-notification.show {
+    display: block;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.push-notification h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.push-notification p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.push-notification .btn-register {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.push-notification .btn-register:hover {
+    background: #45a049;
+}
+
+.push-notification .btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.push-notification .btn-close:hover {
+    color: #333;
+}
+
+/* ========================================
+   LANDING PAGE
+   ======================================== */
+
 .landing-container {
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -700,8 +853,484 @@ header {
     margin: 0;
 }
 
-/* Responsive design per le pagine di autenticazione */
+/* ========================================
+   PAGINA PROFILO COMPLETA
+   ======================================== */
+
+.profilo-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profilo-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 40px;
+    margin-top: 20px;
+}
+
+.foto-section {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.foto-preview {
+    flex-shrink: 0;
+}
+
+.foto-preview img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #4a90e2;
+    box-shadow: 0 4px 12px rgba(74,144,226,0.2);
+    background: linear-gradient(180deg, #fff, #f6fbff);
+}
+
+.foto-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #eef6ff, #f9fbff);
+    color: #4a90e2;
+    font-weight: 700;
+    font-size: 1.6rem;
+    border: 4px dashed rgba(74,144,226,0.18);
+}
+
+.foto-upload {
+    flex: 1;
+}
+
+.btn-upload {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(74,144,226,0.3);
+    border: none;
+    text-decoration: none;
+}
+
+.btn-upload:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(74,144,226,0.4);
+}
+
+.foto-hint {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+.required {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-left: 6px;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #fff;
+    color: #2a3b4c;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9aa7bf;
+    opacity: 1;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 6px 20px rgba(74,144,226,0.08), 0 0 0 3px rgba(74,144,226,0.06) inset;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+    padding-top: 14px;
+}
+
+.nickname-input {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s;
+    background: #fff;
+}
+
+.nickname-input:focus-within {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74,144,226,0.08);
+}
+
+.at-symbol {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    font-weight: 700;
+    color: #4a90e2;
+    border-right: 2px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nickname-input input {
+    border: none;
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 1rem;
+    background: transparent;
+}
+
+.nickname-input input:focus {
+    box-shadow: none;
+}
+
+.field-hint {
+    font-size: 0.85rem;
+    color: #7b8aa3;
+}
+
+.input-error {
+    border-color: #ed2020 !important;
+    box-shadow: 0 0 0 3px rgba(237,32,32,0.06);
+}
+
+.input-error + .field-hint {
+    color: #b71c1c;
+}
+
+.role-badge {
+    display: inline-block;
+    background: rgba(74,144,226,0.12);
+    color: #357ab8;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(74,144,226,0.15);
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-secondary-profile {
+    background: transparent;
+    color: #4a90e2;
+    border: 2px solid rgba(74,144,226,0.18);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary-profile:hover {
+    background: rgba(74,144,226,0.06);
+    color: #357ab8;
+}
+
+.btn-danger {
+    background: #ed2020;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.detail-pill {
+    background: #f6fbff;
+    border: 1px solid rgba(74,144,226,0.06);
+    color: #2a3b4c;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.input-animated {
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.input-animated:focus {
+    transform: translateY(-2px);
+}
+
+.profile-empty {
+    text-align: center;
+    padding: 28px;
+    background: linear-gradient(180deg, #fff, #f7fbff);
+    border-radius: 12px;
+    border: 1px dashed rgba(74,144,226,0.08);
+    color: #6b7c93;
+}
+
+.small-muted {
+    font-size: 0.85rem;
+    color: #7b8aa3;
+}
+
+/* ========================================
+   FIX SPECIFICI PER PAGINE AUTH (LOGIN/REGISTER)
+   ======================================== */
+
+body.login-page,
+body.register-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    overflow: auto;
+}
+
+body.login-page .topbar,
+body.login-page .menu-toggle,
+body.login-page .sidebar,
+body.login-page .sidebar-overlay,
+body.register-page .topbar,
+body.register-page .menu-toggle,
+body.register-page .sidebar,
+body.register-page .sidebar-overlay {
+    /* display: none !important; */ /* <-- COMMENTA O RIMUOVI QUESTA RIGA */
+}
+
+body.login-page .main-content,
+body.login-page .container,
+body.register-page .main-content,
+body.register-page .container {
+    margin-left: 0 !important;
+    transition: none !important;
+}
+
+body.login-page .auth-container,
+body.register-page .auth-container {
+    margin: 0 !important;
+    padding: 20px !important;
+}
+
+/* ========================================
+   FOCUS STATES PER ACCESSIBILITÀ
+   ======================================== */
+
+a:focus, 
+button:focus, 
+input:focus, 
+select:focus, 
+textarea:focus {
+    outline: 3px solid rgba(74,144,226,0.12);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet e schermi medi */
+@media (max-width: 1024px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .container {
+        padding: 16px 6px 24px 6px;
+        margin-top: 80px;
+    }
+    
+    .sidebar {
+        width: 200px;
+    }
+    
+    .sidebar.active ~ .container,
+    .main-content.sidebar-open {
+        margin-left: 200px;
+    }
+}
+
+/* Mobile e schermi piccoli */
+@media (max-width: 768px) {
+    .profilo-card {
+        padding: 24px;
+    }
+
+    .foto-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .foto-preview img, 
+    .foto-placeholder {
+        width: 120px;
+        height: 120px;
+        border-width: 3px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile piccolo */
+@media (max-width: 700px) {
+    .dispense-list {
+        gap: 12px;
+    }
+    
+    .dispensa-card {
+        min-width: 140px;
+        max-width: 98vw;
+        padding: 14px 10px 10px 10px;
+    }
+    
+    .popup-content {
+        min-width: 92vw;
+        padding: 18px 12px;
+    }
+    
+    #popup-dispensa-title {
+        font-size: 1.4rem;
+    }
+    
+    #modifica-btn, 
+    #elimina-btn {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
 @media (max-width: 600px) {
+    .sidebar {
+        width: 160px;
+        padding-top: 44px;
+    }
+    
+    .sidebar a {
+        padding: 12px 14px;
+        font-size: 1rem;
+    }
+    
+    .sidebar.active ~ .container,
+    .main-content.sidebar-open {
+        margin-left: 160px;
+    }
+    
+    .menu-toggle {
+        top: 10px;
+        left: 10px;
+        padding: 6px 4px;
+    }
+    
+    .container {
+        margin-top: 70px;
+    }
+    
+    .topbar {
+        height: 44px;
+        padding-right: 8px;
+    }
+    
+    .topbar .menu-toggle {
+        margin-left: 8px;
+        margin-right: 8px;
+        top: 6px;
+    }
+    
+    .profile-link {
+        font-size: 1rem;
+        padding: 7px 10px;
+    }
+    
+    .user-card {
+        flex-direction: column;
+        align-items: center;
+        padding: 18px 8px;
+        gap: 18px;
+    }
+    
+    .user-photo img {
+        width: 90px;
+        height: 90px;
+    }
+    
     .auth-container {
         padding: 10px;
     }
@@ -751,6 +1380,11 @@ header {
     .nav-brand h2 {
         font-size: 1.3rem;
     }
+    
+    .push-notification {
+        min-width: 280px;
+        max-width: 90vw;
+        right: 10px;
+        top: 10px;
+    }
 }
-
-/* Altri stili (h2, h3, form, label, input, button, ul, li) rimangono invariati */

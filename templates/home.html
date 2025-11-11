@@ -1,47 +1,99 @@
 {% extends "index.html" %}
 
 {% block content %}
-<div class="home-page">
-    <h2>Aggiungi Alimento</h2>
-    <p>Inserisci un nuovo alimento nella tua dispensa.</p>
+<div class="home-container">
+    <div class="home-header">
+        <h2>🍽️ Aggiungi Alimento</h2>
+        <p>Inserisci un nuovo alimento nella tua dispensa</p>
+    </div>
 
-    <form id="aggiungi-form" class="add-food-form">
-        <div class="form-group">
-            <label for="nome_dispensa">Nome Dispensa:</label>
-            <input type="text" id="nome_dispensa" name="nome_dispensa" list="dispense-list" required>
-            <datalist id="dispense-list">
-                {% for dispensa in dispense %}
-                    <option value="{{ dispensa.nome_dispensa }}">
-                {% endfor %}
-            </datalist>
+    <div class="add-food-card">
+        <form id="aggiungi-form" class="add-food-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nome_dispensa">
+                        <span class="label-icon">📦</span>
+                        Nome Dispensa
+                    </label>
+                    <input type="text" id="nome_dispensa" name="nome_dispensa" list="dispense-list" placeholder="Seleziona o crea dispensa" required>
+                    <datalist id="dispense-list">
+                        {% for dispensa in dispense %}
+                            <option value="{{ dispensa.nome_dispensa }}">
+                        {% endfor %}
+                    </datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="nome_alimento">
+                        <span class="label-icon">🥗</span>
+                        Nome Alimento
+                    </label>
+                    <input type="text" id="nome_alimento" name="nome_alimento" placeholder="Es: Pasta, Latte, Pomodori" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantita">
+                        <span class="label-icon">🔢</span>
+                        Quantità
+                    </label>
+                    <input type="number" id="quantita" name="quantita" placeholder="1" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="unita">
+                        <span class="label-icon">📏</span>
+                        Unità
+                    </label>
+                    <select id="unita" name="unita">
+                        <option value="unità">Unità</option>
+                        <option value="pacchetti">Pacchetti</option>
+                        <option value="confezioni">Confezioni</option>
+                        <option value="kg">Kg</option>
+                        <option value="g">Grammi</option>
+                        <option value="l">Litri</option>
+                        <option value="ml">Millilitri</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="scadenza">
+                        <span class="label-icon">📅</span>
+                        Data di Scadenza
+                    </label>
+                    <input type="date" id="scadenza" name="scadenza" required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" onclick="aggiungiAlimento()" class="btn-add">
+                    ➕ Aggiungi Alimento
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-info">
+                <div class="stat-number">{{ dispense|length }}</div>
+                <div class="stat-label">Dispense</div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="nome_alimento">Nome Alimento:</label>
-            <input type="text" id="nome_alimento" name="nome_alimento" required>
+        <div class="stat-card">
+            <div class="stat-icon">🥫</div>
+            <div class="stat-info">
+                <div class="stat-number">
+                    {% set total = namespace(count=0) %}
+                    {% for dispensa in dispense %}
+                        {% set total.count = total.count + dispensa.alimenti|length %}
+                    {% endfor %}
+                    {{ total.count }}
+                </div>
+                <div class="stat-label">Prodotti Totali</div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="quantita">Quantità:</label>
-            <input type="number" id="quantita" name="quantita" required>
-        </div>
-
-        <div class="form-group">
-            <label for="unita">Unità:</label>
-            <select id="unita" name="unita">
-                <option value="unità">Unità</option>
-                <option value="pacchetti">Pacchetti</option>
-                <option value="confezioni">Confezioni</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="scadenza">Data di Scadenza:</label>
-            <input type="date" id="scadenza" name="scadenza" required>
-        </div>
-
-        <button type="button" onclick="aggiungiAlimento()" class="btn-primary">Aggiungi</button>
-    </form>
+    </div>
 </div>
 
 <script>
@@ -54,6 +106,9 @@
             option.value = dispensa.nome_dispensa;
             datalist.appendChild(option);
         });
+        
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('scadenza').setAttribute('min', today);
     });
 
     function aggiungiAlimento() {
@@ -62,6 +117,11 @@
         const quantita = document.getElementById('quantita').value;
         const unita = document.getElementById('unita').value;
         const scadenza = document.getElementById('scadenza').value;
+
+        if (!nomeDispensa || !nomeAlimento || !quantita || !scadenza) {
+            alert('⚠️ Compila tutti i campi obbligatori!');
+            return;
+        }
 
         fetch('/aggiungi', {
             method: 'POST',
@@ -73,8 +133,12 @@
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.message);
+            alert('✅ ' + data.message);
             window.location.href = '/dispense';
+        })
+        .catch(error => {
+            console.error('Errore:', error);
+            alert('❌ Errore durante l\'aggiunta dell\'alimento');
         });
     }
 </script>

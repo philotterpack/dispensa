@@ -1,5 +1,74 @@
 {% extends 'index.html' %}
 {% block content %}
-    <h2>Lista della Spesa</h2>
-    <p>Questa è la pagina della lista della spesa. Puoi personalizzarla come preferisci.</p>
+<style>
+    .liste-spesa-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 24px;
+        margin-top: 30px;
+        margin-bottom: 40px;
+    }
+    .lista-spesa-card {
+        background: linear-gradient(135deg, #f9fafc 0%, #ffff 100%);
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(74,144,226,0.12);
+        padding: 30px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+    .lista-spesa-card:hover {
+        box-shadow: 0 12px 40px rgba(74,144,226,0.25);
+        transform: translateY(-8px);
+        border-color: #4a90e2;
+    }
+    .lista-spesa-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2a3b4c;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .lista-spesa-title::before {
+        content: '🛒';
+        font-size: 1.5rem;
+    }
+    .lista-spesa-info {
+        font-size: 1rem;
+        color: #666;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<h2>Gestione Liste della Spesa</h2>
+<p>Qui puoi gestire le tue due liste della spesa principali.</p>
+
+<div class="liste-spesa-list" id="liste-spesa-list">
+    <div class="lista-spesa-card" onclick="apriPaginaListaSpesa('Lista Spesa Generale')">
+        <div class="lista-spesa-title">Lista Spesa Generale</div>
+        <div class="lista-spesa-info">
+            {{ prodotti_generale|length if prodotti_generale is defined else 0 }} prodotti
+        </div>
+    </div>
+    <div class="lista-spesa-card" onclick="apriPaginaListaSpesa('Prodotti Scaduti')">
+        <div class="lista-spesa-title">Prodotti Scaduti</div>
+        <div class="lista-spesa-info">
+            {{ prodotti_scaduti|length if prodotti_scaduti is defined else 0 }} prodotti
+        </div>
+    </div>
+</div>
+
+<script>
+function apriPaginaListaSpesa(nome_lista) {
+    const encoded = encodeURIComponent(nome_lista);
+    window.location.href = `/lista_spesa/${encoded}`;
+}
+</script>
 {% endblock %}

@@ -1,7 +1,8 @@
 __pycache__/
 *.pyc
-*.pyo
-*.log
 .env
+venv/
+.env.*
+serviceAccountKey.json
 backend/serviceAccountKey.json
-.DS_Store
+instance/

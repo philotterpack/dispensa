@@ -5,8 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Dispensa Virtuale</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Stili per la notifica push */
+        .push-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 320px;
+            max-width: 400px;
+            animation: slideIn 0.4s ease-out;
+            display: none;
+        }
+        
+        .push-notification.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .push-notification h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .push-notification p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .push-notification .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .push-notification .btn-register:hover {
+            background: #45a049;
+        }
+        
+        .push-notification .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .push-notification .btn-close:hover {
+            color: #333;
+        }
+    </style>
 </head>
-<body>
+<body class="login-page">
     <div class="auth-container">
         <div class="auth-card">
             <header class="auth-header">
@@ -17,15 +101,15 @@
             <form id="login-form" class="auth-form">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Inserisci la tua email" required>
+                    <input type="email" id="email" name="email" placeholder="Inserisci la tua email" required autocomplete="email">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Inserisci la tua password" required>
+                    <input type="password" id="password" name="password" placeholder="Inserisci la tua password" required autocomplete="current-password">
                 </div>
 
-                <button type="submit" class="btn-primary btn-full">Accedi</button>
+                <button type="submit" class="btn-primary btn-full" id="login-btn">Accedi</button>
             </form>
 
             <div class="auth-footer">
@@ -37,74 +121,152 @@
         </div>
     </div>
 
+    <!-- Notifica Push -->
+    <div id="push-notification" class="push-notification">
+        <button class="btn-close" onclick="closeNotification()">×</button>
+        <h3>Non ti sei ancora registrato?</h3>
+        <p>Crea un account per accedere alla tua dispensa virtuale!</p>
+        <button class="btn-register" onclick="goToRegister()">Registrati!</button>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="{{ url_for('static', filename='js/firebase-config.js') }}"></script>
     
     <script>
+        // DEBUG: Mostra stato Firebase
+        function showFirebaseStatus(msg) {
+            let el = document.getElementById('firebase-status');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'firebase-status';
+                el.style = 'color: #c00; margin: 10px 0;';
+                document.body.insertBefore(el, document.body.firstChild);
+            }
+            el.textContent = msg;
+        }
+
+        // Controlla inizializzazione Firebase
+        try {
+            if (typeof firebase === "undefined") {
+                showFirebaseStatus("Firebase SDK non caricato.");
+                console.error("Firebase SDK non caricato.");
+            } else {
+                showFirebaseStatus("Firebase SDK caricato.");
+                console.log("Firebase SDK caricato.");
+            }
+            if (typeof auth === "undefined") {
+                showFirebaseStatus("auth non definito. Controlla firebase-config.js.");
+                console.error("auth non definito. Controlla firebase-config.js.");
+            } else {
+                showFirebaseStatus("Firebase Auth pronto.");
+                console.log("Firebase Auth pronto.");
+            }
+        } catch (e) {
+            showFirebaseStatus("Errore inizializzazione Firebase: " + e);
+            console.error("Errore inizializzazione Firebase:", e);
+        }
+
+        // Blocca submit multiplo
+        let loginInProgress = false;
+
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+            if (loginInProgress) return;
+            loginInProgress = true;
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('error-message');
+            const loginBtn = document.getElementById('login-btn');
             
             errorMessage.style.display = 'none';
-            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Accesso in corso...';
+
             if (!email || !password) {
                 showError('Inserisci email e password');
+                resetLoginButton();
                 return;
             }
-            
+
+            if (typeof auth === "undefined") {
+                showError("Configurazione Firebase non trovata.");
+                resetLoginButton();
+                return;
+            }
+
             auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    return userCredential.user.getIdToken();
-                })
+                .then((userCredential) => userCredential.user.getIdToken())
                 .then((idToken) => {
-                    document.cookie = `token=${idToken};max-age=3600;path=/`;
-                    console.log("Login successful");
-                    window.location.href = "{{ url_for('home') }}";
+                    document.cookie = `token=${idToken};max-age=3600;path=/;SameSite=Lax`;
+                    window.location.href = "{{ url_for('profilo_page') }}";
                 })
                 .catch((error) => {
-                    console.error("Login error", error);
-                    let errorMsg = "Errore durante il login";
+                    console.log('Errore login:', error.code);
                     
-                    switch(error.code) {
-                        case 'auth/user-not-found':
-                            errorMsg = "Nessun utente trovato con questa email";
-                            break;
-                        case 'auth/wrong-password':
-                            errorMsg = "Password errata";
-                            break;
-                        case 'auth/invalid-email':
-                            errorMsg = "Email non valida";
-                            break;
-                        case 'auth/user-disabled':
-                            errorMsg = "Account disabilitato";
-                            break;
-                        case 'auth/too-many-requests':
-                            errorMsg = "Troppi tentativi di login. Riprova più tardi";
-                            break;
-                        default:
-                            errorMsg = error.message;
+                    // Se l'utente non esiste, mostra la notifica push
+                    if (error.code === 'auth/user-not-found') {
+                        showPushNotification();
+                    } else {
+                        let errorMsg = "Errore durante il login";
+                        switch(error.code) {
+                            case 'auth/wrong-password':
+                                errorMsg = "Password errata";
+                                break;
+                            case 'auth/invalid-email':
+                                errorMsg = "Email non valida";
+                                break;
+                            case 'auth/user-disabled':
+                                errorMsg = "Account disabilitato";
+                                break;
+                            case 'auth/too-many-requests':
+                                errorMsg = "Troppi tentativi di login. Riprova più tardi";
+                                break;
+                            case 'auth/invalid-credential':
+                                errorMsg = "Credenziali non valide. Verifica email e password";
+                                break;
+                            default:
+                                errorMsg = error.message;
+                        }
+                        showError(errorMsg);
                     }
-                    
-                    showError(errorMsg);
+                    resetLoginButton();
                 });
         });
-        
+
         function showError(message) {
             const errorMessage = document.getElementById('error-message');
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
         }
-        
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                window.location.href = "{{ url_for('home') }}";
-            }
-        });
+
+        function resetLoginButton() {
+            loginInProgress = false;
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Accedi';
+        }
+
+        function showPushNotification() {
+            const notification = document.getElementById('push-notification');
+            notification.classList.add('show');
+            
+            // Chiudi automaticamente dopo 10 secondi
+            setTimeout(() => {
+                closeNotification();
+            }, 10000);
+        }
+
+        function closeNotification() {
+            const notification = document.getElementById('push-notification');
+            notification.classList.remove('show');
+        }
+
+        function goToRegister() {
+            window.location.href = "{{ url_for('register') }}";
+        }
     </script>
 </body>
 </html>

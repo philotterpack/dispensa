@@ -7,22 +7,25 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="topbar">
-        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-        <a href="/profilo" class="profile-link">Profilo</a>
-    </div>
+    <!-- Menu Hamburger -->
+    <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+
+    <!-- Sidebar (SENZA active) -->
     <nav class="sidebar" id="sidebar">
         <ul>
             <li><a href="/home">Home</a></li>
             <li><a href="/dispense">Dispense</a></li>
             <li><a href="/lista_spesa">Lista della Spesa</a></li>
             <li><a href="/profilo">Profilo</a></li>
+            <li><a href="#" id="logout-btn">Logout</a></li> <!-- aggiunto logout -->
         </ul>
     </nav>
+
+    <!-- Contenuto principale -->
     <div class="container" id="mainContainer">
         <header>
             <h1>La Mia Dispensa Virtuale</h1>
@@ -31,20 +34,49 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('mainContainer').classList.toggle('sidebar-open');
+            const sidebar = document.getElementById('sidebar');
+            const container = document.getElementById('mainContainer');
+            sidebar.classList.toggle('active');
+            container.classList.toggle('sidebar-open');
         }
+
+        // Chiudi sidebar cliccando fuori
         document.addEventListener('click', function(e) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.getElementById('menuToggle');
-            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+            
+            if (sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !toggle.contains(e.target)) {
                 sidebar.classList.remove('active');
                 document.getElementById('mainContainer').classList.remove('sidebar-open');
             }
         });
+
+        // Logout e redirect alla landing page
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (typeof auth !== "undefined") {
+                        auth.signOut().then(function() {
+                            // Cancella il cookie token
+                            document.cookie = "token=;max-age=0;path=/";
+                            window.location.href = "{{ url_for('landing') }}";
+                        });
+                    } else {
+                        window.location.href = "{{ url_for('landing') }}";
+                    }
+                });
+            }
+        });
     </script>
+
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>

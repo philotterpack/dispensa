@@ -6,7 +6,7 @@
     <title>Registrazione - Dispensa Virtuale</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="register-page">
     <div class="auth-container">
         <div class="auth-card">
             <header class="auth-header">
@@ -134,10 +134,10 @@
         }
         
         auth.onAuthStateChanged((user) => {
-            if (user) {
-                window.location.href = "{{ url_for('home') }}";
-            }
-        });
+    if (user && !window.location.pathname.includes('login') && !window.location.pathname.includes('register')) {
+        window.location.href = "{{ url_for('home') }}";
+    }
+});
         
         document.getElementById('password').addEventListener('input', function() {
             const password = this.value;

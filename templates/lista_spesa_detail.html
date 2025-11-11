@@ -1,0 +1,237 @@
+{% extends "index.html" %}
+
+{% block content %}
+<style>
+    .prodotti-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 22px;
+        margin-top: 24px;
+    }
+    .prodotto-card {
+        background: #f9fafc;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(74,144,226,0.10);
+        padding: 22px 18px 18px 18px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 2px solid transparent;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .prodotto-card.selected {
+        border-color: #4a90e2;
+        box-shadow: 0 4px 20px rgba(74,144,226,0.18);
+    }
+    .prodotto-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #2a3b4c;
+    }
+    .prodotto-meta {
+        font-size: 0.98rem;
+        color: #666;
+        margin-bottom: 4px;
+    }
+    .prodotto-checkbox {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        transform: scale(1.3);
+    }
+    .prodotti-actions {
+        margin-top: 18px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .btn-action {
+        background: #4a90e2;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-action:hover {
+        background: #357ab8;
+    }
+    .btn-danger {
+        background: #e74c3c;
+    }
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+    .lista-actions {
+        margin-bottom: 18px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .btn-modifica {
+        background: #f1c40f;
+        color: #2a3b4c;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-modifica:hover {
+        background: #f7e08c;
+    }
+    .btn-elimina-lista {
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 18px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-elimina-lista:hover {
+        background: #c0392b;
+    }
+</style>
+
+<div class="lista-actions">
+    <button class="btn-modifica" onclick="modificaLista()">✏️ Modifica Lista</button>
+    <button class="btn-elimina-lista" onclick="eliminaLista()">🗑️ Elimina Lista</button>
+    <span style="font-size:1.1rem;color:#357ab8;font-weight:600;">{{ nome_lista }}</span>
+</div>
+
+<div class="prodotti-actions">
+    <button class="btn-action btn-danger" onclick="eliminaSelezionati()">Elimina selezionati</button>
+    <!-- Altri bottoni funzione in futuro -->
+</div>
+
+<div class="prodotti-grid" id="prodotti-list"></div>
+
+<script>
+const nomeLista = {{ nome_lista|tojson|safe }};
+const prodottiData = {{ prodotti|tojson|safe }};
+let prodottiArray = Array.isArray(prodottiData) ? [...prodottiData] : [];
+let selectedProdotti = new Set();
+
+function renderList(arr) {
+    prodottiArray = arr;
+    const container = document.getElementById('prodotti-list');
+    container.innerHTML = '';
+    if (!arr || arr.length === 0) {
+        container.innerHTML = '<div style="padding:18px;color:#999;">Nessun prodotto presente.</div>';
+        return;
+    }
+    arr.forEach((p, idx) => {
+        const selected = selectedProdotti.has(p) ? 'selected' : '';
+        container.innerHTML += `
+        <div class="prodotto-card ${selected}" data-nome="${p}">
+            <input type="checkbox" class="prodotto-checkbox" data-nome="${p}" ${selected ? 'checked' : ''} onchange="toggleProdottoSelezionato('${p}')">
+            <div class="prodotto-header">${p}</div>
+            <div class="prodotto-meta"></div>
+            <button class="btn-action btn-danger" style="margin-top:8px;" onclick="eliminaProdotto('${p}')">Elimina</button>
+            <button class="btn-action" style="margin-top:8px;" onclick="spostaInDispensa('${p}')">Sposta in Dispensa</button>
+        </div>
+        `;
+    });
+}
+function toggleProdottoSelezionato(nome) {
+    if (selectedProdotti.has(nome)) {
+        selectedProdotti.delete(nome);
+    } else {
+        selectedProdotti.add(nome);
+    }
+    renderList(prodottiArray);
+}
+function eliminaSelezionati() {
+    if (selectedProdotti.size === 0) {
+        alert('Seleziona almeno un prodotto da eliminare.');
+        return;
+    }
+    if (!confirm('Vuoi eliminare i prodotti selezionati?')) return;
+    // Chiamata backend per ogni prodotto selezionato
+    let promises = [];
+    selectedProdotti.forEach(nome => {
+        promises.push(
+            fetch('/rimuovi_prodotto_lista_spesa', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `nome_lista=${encodeURIComponent(nomeLista)}&nome_prodotto=${encodeURIComponent(nome)}`
+            })
+        );
+    });
+    Promise.all(promises).then(() => {
+        // Aggiorna la lista dopo la conferma dal backend
+        prodottiArray = prodottiArray.filter(p => !selectedProdotti.has(p));
+        selectedProdotti.clear();
+        renderList(prodottiArray);
+    });
+}
+function eliminaProdotto(nome) {
+    if (!confirm('Vuoi eliminare questo prodotto?')) return;
+    fetch('/rimuovi_prodotto_lista_spesa', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `nome_lista=${encodeURIComponent(nomeLista)}&nome_prodotto=${encodeURIComponent(nome)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            prodottiArray = prodottiArray.filter(p => p !== nome);
+            renderList(prodottiArray);
+        } else {
+            alert('Errore: ' + data.message);
+        }
+    });
+}
+function spostaInDispensa(nomeProdotto) {
+    const nomeDispensa = prompt('In quale dispensa vuoi spostare il prodotto?');
+    if (!nomeDispensa) return;
+    fetch('/sposta_in_dispensa', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `nome_lista=${encodeURIComponent(nomeLista)}&nome_prodotto=${encodeURIComponent(nomeProdotto)}&nome_dispensa=${encodeURIComponent(nomeDispensa)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Prodotto spostato nella dispensa!');
+            prodottiArray = prodottiArray.filter(p => p !== nomeProdotto);
+            renderList(prodottiArray);
+        } else {
+            alert('Errore: ' + data.message);
+        }
+    });
+}
+function modificaLista() {
+    alert('Funzione modifica lista in sviluppo!');
+}
+function eliminaLista() {
+    if (!confirm('Vuoi eliminare questa lista?')) return;
+    window.location.href = '/lista_spesa';
+}
+document.addEventListener('DOMContentLoaded', () => {
+    renderList(prodottiArray);
+});
+</script>
+{% endblock %}

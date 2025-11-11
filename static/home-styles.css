@@ -1,0 +1,30 @@
+/* Home Page Modern Styles */
+.home-container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+.home-header { text-align: center; margin-bottom: 40px; }
+.home-header h2 { font-size: 2.2rem; color: #2a3b4c; margin-bottom: 10px; font-weight: 700; }
+.home-header p { font-size: 1.1rem; color: #666; }
+.add-food-card { background: white; border-radius: 20px; box-shadow: 0 8px 30px rgba(74,144,226,0.12); padding: 40px; margin-bottom: 40px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 30px; }
+.form-group.full-width { grid-column: 1 / -1; }
+.form-group label { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #2c3e50; margin-bottom: 10px; font-size: 1rem; }
+.label-icon { font-size: 1.3rem; }
+.form-group input, .form-group select { width: 100%; padding: 14px 18px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: all 0.3s; font-family: 'Segoe UI', Arial, sans-serif; }
+.form-group input:focus, .form-group select:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 0 4px rgba(74,144,226,0.1); }
+.form-group input::placeholder { color: #aaa; }
+.btn-add { width: 100%; background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%); color: white; padding: 16px 32px; border: none; border-radius: 12px; font-size: 1.15rem; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(74,144,226,0.3); }
+.btn-add:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(74,144,226,0.4); }
+.btn-add:active { transform: translateY(-1px); }
+.quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 30px; display: flex; align-items: center; gap: 20px; box-shadow: 0 6px 20px rgba(102,126,234,0.3); transition: all 0.3s; }
+.stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+.stat-icon { font-size: 3rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+.stat-info { color: white; }
+.stat-number { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+.stat-label { font-size: 1rem; opacity: 0.9; font-weight: 500; }
+@media (max-width: 768px) {
+    .add-food-card { padding: 24px; }
+    .form-grid { grid-template-columns: 1fr; gap: 20px; }
+    .quick-stats { grid-template-columns: 1fr; }
+    .home-header h2 { font-size: 1.8rem; }
+    .popup-content { min-width: 90%; padding: 30px 20px; }
+}
