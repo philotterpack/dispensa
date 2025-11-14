@@ -2,3 +2,7 @@ Flask
 firebase-admin
 google-cloud-firestore
 gunicorn
+pytesseract
+Pillow
+opencv-python-headless
+numpy
