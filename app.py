@@ -3,14 +3,27 @@ import firebase_admin
 from firebase_admin import credentials, auth, firestore
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
+from ocr_processor import analizza_scontrino
+from werkzeug.utils import secure_filename
+import re
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'chiave-segreta-fissa-da-cambiare-in-produzione')
 
 # make routing less strict about trailing slashes
 app.url_map.strict_slashes = False
+
+# Configurazione upload
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if os.environ.get('FIREBASE_CREDENTIALS'):
     firebase_creds = json.loads(os.environ.get('FIREBASE_CREDENTIALS'))
@@ -52,6 +65,28 @@ def trova_categoria(nome_alimento):
                 return nome_categoria
 
     return 'altro'
+
+def calcola_scadenza(categoria, surgelato=False):
+    """Calcola la data di scadenza basandosi sulla categoria"""
+    oggi = datetime.now()
+    
+    for cat in food_data['categorie_cibi']:
+        if cat['nome_categoria'] == categoria:
+            range_scadenza = cat['range_scadenza']
+            
+            if 'giorni' in range_scadenza and not surgelato:
+                giorni = re.findall(r'(\d+)-(\d+)\s*giorni', range_scadenza)
+                if giorni:
+                    giorni_medio = (int(giorni[0][0]) + int(giorni[0][1])) // 2
+                    return (oggi + timedelta(days=giorni_medio)).strftime('%Y-%m-%d')
+            
+            if surgelato and 'mesi' in range_scadenza:
+                mesi = re.findall(r'(\d+)-(\d+)\s*mesi', range_scadenza)
+                if mesi:
+                    mesi_medio = (int(mesi[0][0]) + int(mesi[0][1])) // 2
+                    return (oggi + timedelta(days=mesi_medio*30)).strftime('%Y-%m-%d')
+    
+    return (oggi + timedelta(days=7)).strftime('%Y-%m-%d')
 
 def verifica_autenticazione():
     id_token = request.cookies.get('token')
@@ -483,6 +518,49 @@ def aggiorna_prodotti_scaduti(uid):
             if prod not in prodotti_lista:
                 prodotti_lista.append(prod)
         lista_ref.set({'prodotti': prodotti_lista}, merge=True)
+
+@app.route('/analizza_scontrino', methods=['POST'])
+@richiede_autenticazione
+def analizza_scontrino_route():
+    if 'scontrino' not in request.files:
+        return jsonify({'success': False, 'error': 'Nessun file caricato'}), 400
+    
+    file = request.files['scontrino']
+    
+    if file.filename == '':
+        return jsonify({'success': False, 'error': 'Nessun file selezionato'}), 400
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{timestamp}_{filename}"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+        
+        risultato = analizza_scontrino(filepath)
+        
+        if risultato['success']:
+            prodotti_arricchiti = []
+            for prod in risultato['prodotti']:
+                categoria = trova_categoria(prod['nome'])
+                prodotti_arricchiti.append({
+                    'nome': prod['nome'],
+                    'quantita': prod['quantita'],
+                    'categoria': categoria,
+                    'scadenza_suggerita': calcola_scadenza(categoria, False),
+                    'scadenza_surgelato': calcola_scadenza(categoria, True)
+                })
+            
+            os.remove(filepath)
+            
+            return jsonify({
+                'success': True,
+                'prodotti': prodotti_arricchiti
+            })
+        else:
+            return jsonify(risultato), 500
+    
+    return jsonify({'success': False, 'error': 'Formato file non valido'}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -18,7 +18,7 @@
                     <input type="text" id="nome_dispensa" name="nome_dispensa" list="dispense-list" placeholder="Seleziona o crea dispensa" required>
                     <datalist id="dispense-list">
                         {% for dispensa in dispense %}
-                            <option value="{{ dispensa.nome_dispensa }}">
+                        <option value="{{ dispensa.nome_dispensa }}">
                         {% endfor %}
                     </datalist>
                 </div>
@@ -68,6 +68,9 @@
                 <button type="button" onclick="aggiungiAlimento()" class="btn-add">
                     ➕ Aggiungi Alimento
                 </button>
+                <button type="button" onclick="apriScannerScontrino()" class="btn-scan">
+                    📸 Aggiungi Scontrino
+                </button>
             </div>
         </form>
     </div>
@@ -86,7 +89,7 @@
                 <div class="stat-number">
                     {% set total = namespace(count=0) %}
                     {% for dispensa in dispense %}
-                        {% set total.count = total.count + dispensa.alimenti|length %}
+                    {% set total.count = total.count + dispensa.alimenti|length %}
                     {% endfor %}
                     {{ total.count }}
                 </div>
@@ -94,10 +97,68 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Scanner Scontrino -->
+    <div id="modal-scontrino" class="modal-scontrino">
+        <div class="modal-content-scontrino">
+            <div class="modal-header-scontrino">
+                <h3>📸 Scansiona Scontrino</h3>
+                <button class="close-modal" onclick="chiudiModalScontrino()">✕</button>
+            </div>
+            
+            <div class="upload-area" id="upload-area">
+                <input type="file" id="file-scontrino" accept="image/*" capture="environment" style="display: none;" onchange="handleFileSelect(event)">
+                <div class="upload-icon">📷</div>
+                <p class="upload-text">Clicca per scattare una foto o caricare un'immagine</p>
+                
+                <button type="button" class="btn-upload" onclick="document.getElementById('file-scontrino').click()">
+                    Scegli Foto
+                </button>
+            </div>
+            <div id="preview-area" class="preview-area" style="display: none;">
+                <img id="preview-image" src="" alt="Anteprima scontrino">
+                <div class="loading-spinner" id="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Sto analizzando lo scontrino...</p>
+                </div>
+            </div>
+
+            <div id="risultati-area" class="risultati-area" style="display: none;">
+                <h4>✅ Prodotti Trovati</h4>
+                <p class="risultati-subtitle">Controlla i prodotti, modifica se necessario e conferma</p>
+                
+                <div class="dispensa-select-container">
+                    <label for="dispensa-destinazione">
+                        <span class="label-icon">📦</span>
+                        Dispensa di destinazione
+                    </label>
+                    <input type="text" id="dispensa-destinazione" list="dispense-list-modal" placeholder="Seleziona o crea dispensa" required>
+                    <datalist id="dispense-list-modal">
+                        {% for dispensa in dispense %}
+                        <option value="{{ dispensa.nome_dispensa }}">
+                        {% endfor %}
+                    </datalist>
+                </div>
+
+                <div id="prodotti-lista" class="prodotti-lista"></div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-conferma" onclick="confermaProdotti()">
+                        ✅ Conferma e Aggiungi Tutti
+                    </button>
+                    <button type="button" class="btn-annulla" onclick="chiudiModalScontrino()">
+                        ❌ Annulla
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
     const dispenseData = JSON.parse('{{ dispense|tojson|safe }}') || [];
+    
     document.addEventListener('DOMContentLoaded', () => {
         const datalist = document.getElementById('dispense-list');
         datalist.innerHTML = '';
@@ -110,7 +171,12 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('scadenza').setAttribute('min', today);
     });
-
+// click per ingrandire/ridurre l'immagine
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'preview-image') {
+        e.target.classList.toggle('preview-zoom');
+    }
+});
     function aggiungiAlimento() {
         const nomeDispensa = document.getElementById('nome_dispensa').value;
         const nomeAlimento = document.getElementById('nome_alimento').value;
@@ -141,5 +207,291 @@
             alert('❌ Errore durante l\'aggiunta dell\'alimento');
         });
     }
+
+    // ==== FUNZIONI SCANNER SCONTRINO ====
+    
+    let prodottiScansionati = [];
+
+    function apriScannerScontrino() {
+        document.getElementById('modal-scontrino').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function chiudiModalScontrino() {
+        document.getElementById('modal-scontrino').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset
+        document.getElementById('upload-area').style.display = 'block';
+        document.getElementById('preview-area').style.display = 'none';
+        document.getElementById('risultati-area').style.display = 'none';
+        document.getElementById('file-scontrino').value = '';
+        prodottiScansionati = [];
+    }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Mostra anteprima
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-image').src = e.target.result;
+            document.getElementById('upload-area').style.display = 'none';
+            document.getElementById('preview-area').style.display = 'block';
+            document.getElementById('loading-spinner').style.display = 'flex';
+            
+            // Invia al server per analisi
+            analizzaScontrino(file);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function analizzaScontrino(file) {
+        const formData = new FormData();
+        formData.append('scontrino', file);
+
+        fetch('/analizza_scontrino', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('loading-spinner').style.display = 'none';
+            
+            if (data.success) {
+                prodottiScansionati = data.prodotti;
+                mostraRisultati(data.prodotti);
+            } else {
+                alert('❌ Errore nell\'analisi dello scontrino: ' + (data.error || 'Errore sconosciuto'));
+                chiudiModalScontrino();
+            }
+        })
+        .catch(error => {
+            document.getElementById('loading-spinner').style.display = 'none';
+            console.error('Errore:', error);
+            alert('❌ Errore durante l\'analisi dello scontrino');
+            chiudiModalScontrino();
+        });
+    }
+
+    function mostraRisultati(prodotti) {
+        document.getElementById('risultati-area').style.display = 'block';
+
+        const lista = document.getElementById('prodotti-lista');
+        lista.innerHTML = '';
+
+        if (prodotti.length === 0) {
+            lista.innerHTML = '<p class="no-products">Nessun prodotto riconosciuto. Prova con un\'altra foto.</p>';
+            return;
+        }
+
+        prodotti.forEach((prodotto, index) => {
+            const card = document.createElement('div');
+            card.className = 'prodotto-card';
+            card.id = `prodotto-${index}`;
+
+card.innerHTML = `
+    <div class="prodotto-header">
+        <div class="prodotto-header-left">
+            <span class="prodotto-categoria-pill">${prodotto.categoria || 'Altro'}</span>
+            <span class="prodotto-nome-riassunto">${prodotto.nome || ''}</span>
+        </div>
+        <button class="btn-elimina-prodotto" onclick="eliminaProdotto(${index})">🗑️</button>
+    </div>
+
+    <div class="prodotto-body">
+        <div class="prodotto-riga">
+            <div class="prodotto-etichetta">Nome prodotto</div>
+            <div class="prodotto-valore">
+                <input type="text" id="nome-${index}" value="${prodotto.nome || ''}" class="input-prodotto full-width-input">
+            </div>
+        </div>
+
+        <div class="prodotto-riga">
+            <div class="prodotto-etichetta">Quantità</div>
+            <div class="prodotto-valore prodotto-valore-quantita">
+                <input type="number" id="quantita-${index}" value="${prodotto.quantita || 1}" step="0.001" min="0" class="input-prodotto input-quantita">
+                <select id="unita-${index}" class="input-prodotto select-unita">
+                    <option value="unità">Unità</option>
+                    <option value="pacchetti">Pacchetti</option>
+                    <option value="confezioni">Confezioni</option>
+                    <option value="pz">Pezzi</option>
+                    <option value="kg">Kg</option>
+                    <option value="g">Grammi</option>
+                    <option value="l">Litri</option>
+                    <option value="ml">Millilitri</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="prodotto-riga">
+            <div class="prodotto-etichetta">Conservazione</div>
+            <div class="prodotto-valore">
+                <label class="checkbox-surgelato">
+                    <input type="checkbox" id="surgelato-${index}" onchange="aggiornaScadenza(${index})">
+                    <span>❄️ Prodotto surgelato</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="prodotto-riga">
+            <div class="prodotto-etichetta">Data di scadenza</div>
+            <div class="prodotto-valore">
+                <input type="date" id="scadenza-${index}" value="${prodotto.scadenza_suggerita || ''}" class="input-prodotto">
+            </div>
+        </div>
+    </div>
+`;
+
+            lista.appendChild(card);
+
+            // 🔽 Imposta valore iniziale delle unità se arrivano dal backend
+            const selectUnita = document.getElementById(`unita-${index}`);
+            if (prodotto.unita) {
+                const unitaLower = prodotto.unita.toLowerCase();
+                const options = Array.from(selectUnita.options);
+                const found = options.find(o => o.value.toLowerCase() === unitaLower);
+                if (found) {
+                    selectUnita.value = found.value;
+                } else {
+                    // Se non trova match esatto, prova con mapping comune
+                    const mappingUnita = {
+                        'grammi': 'g',
+                        'gram': 'g',
+                        'kilogrammi': 'kg',
+                        'kilo': 'kg',
+                        'pezzo': 'pz',
+                        'pezzi': 'pz',
+                        'pacchetto': 'pacchetti',
+                        'litro': 'l',
+                        'litri': 'l',
+                        'millilitro': 'ml',
+                        'millilitri': 'ml'
+                    };
+                    const mapped = mappingUnita[unitaLower];
+                    if (mapped) {
+                        const foundMapped = options.find(o => o.value.toLowerCase() === mapped);
+                        if (foundMapped) {
+                            selectUnita.value = foundMapped.value;
+                        }
+                    }
+                }
+            } else {
+                // Euristica: se quantità < 5 e non è intero → probabile kg (per tipo finocchio 0,51)
+                const q = parseFloat(prodotto.quantita);
+                if (!isNaN(q) && q > 0 && q < 5 && !Number.isInteger(q)) {
+                    selectUnita.value = 'kg';
+                }
+            }
+
+            // 🔽 Imposta data di scadenza minima = oggi
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById(`scadenza-${index}`).setAttribute('min', today);
+        });
+    }
+
+    function aggiornaScadenza(index) {
+        const surgelato = document.getElementById(`surgelato-${index}`).checked;
+        const prodotto = prodottiScansionati[index];
+
+        if (!prodotto) return;
+
+        const inputScadenza = document.getElementById(`scadenza-${index}`);
+
+        if (surgelato) {
+            // Se surgelato e abbiamo una data dedicata
+            if (prodotto.scadenza_surgelato) {
+                inputScadenza.value = prodotto.scadenza_surgelato;
+            }
+        } else {
+            if (prodotto.scadenza_suggerita) {
+                inputScadenza.value = prodotto.scadenza_suggerita;
+            }
+        }
+    }
+
+    function eliminaProdotto(index) {
+        const card = document.getElementById(`prodotto-${index}`);
+        if (!card) return;
+        
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.8)';
+        
+        setTimeout(() => {
+            card.remove();
+            prodottiScansionati.splice(index, 1);
+            
+            // Se non ci sono più prodotti
+            if (document.querySelectorAll('.prodotto-card').length === 0) {
+                document.getElementById('prodotti-lista').innerHTML = '<p class="no-products">Nessun prodotto selezionato.</p>';
+            }
+        }, 300);
+    }
+
+    function confermaProdotti() {
+        const nomeDispensa = document.getElementById('dispensa-destinazione').value;
+        
+        if (!nomeDispensa) {
+            alert('⚠️ Seleziona una dispensa di destinazione!');
+            return;
+        }
+
+        const prodottiDaAggiungere = [];
+        const cards = document.querySelectorAll('.prodotto-card');
+        
+        cards.forEach((card, index) => {
+            const nome = document.getElementById(`nome-${index}`)?.value;
+            const quantita = document.getElementById(`quantita-${index}`)?.value;
+            const unita = document.getElementById(`unita-${index}`)?.value;
+            const scadenza = document.getElementById(`scadenza-${index}`)?.value;
+            
+            if (nome && quantita && scadenza) {
+                prodottiDaAggiungere.push({ nome, quantita, unita, scadenza });
+            }
+        });
+
+        if (prodottiDaAggiungere.length === 0) {
+            alert('⚠️ Nessun prodotto valido da aggiungere!');
+            return;
+        }
+
+        // Aggiungi tutti i prodotti
+        let completati = 0;
+        let errori = 0;
+        
+        prodottiDaAggiungere.forEach(prodotto => {
+            fetch('/aggiungi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `nome_dispensa=${encodeURIComponent(nomeDispensa)}&nome_alimento=${encodeURIComponent(prodotto.nome)}&quantita=${prodotto.quantita}&unita=${prodotto.unita}&scadenza=${prodotto.scadenza}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                completati++;
+                if (completati + errori === prodottiDaAggiungere.length) {
+                    if (errori === 0) {
+                        alert(`✅ ${completati} prodotti aggiunti con successo!`);
+                        window.location.href = '/dispense';
+                    } else {
+                        alert(`⚠️ ${completati} prodotti aggiunti, ${errori} errori.`);
+                        window.location.href = '/dispense';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Errore:', error);
+                errori++;
+                if (completati + errori === prodottiDaAggiungere.length) {
+                    alert(`⚠️ ${completati} prodotti aggiunti, ${errori} errori.`);
+                    window.location.href = '/dispense';
+                }
+            });
+        });
+    }
+
 </script>
 {% endblock %}
